@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Benson Fire Department — NFIRS Quick Form</title>
+  <style>
+    :root {
+      --gap: 12px;
+      --fg: #111;
+      --muted: #555;
+      --accent: #0a5;
+      --border: #cfcfcf;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      line-height: 1.35;
+      color: var(--fg);
+      margin: 0;
+      background: #f7f7f7;
+    }
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 14px 18px; }
+    h1 { font-size: 20px; margin: 0 0 6px; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .toolbar .spacer { flex: 1; }
+    button, .btn {
+      appearance: none; border: 1px solid var(--border); background: white; padding: 8px 12px; border-radius: 8px; cursor: pointer;
+      font-weight: 600;
+    }
+    button.primary { border-color: #0a5; background: #0a5; color: #fff; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    main { padding: 20px 18px 60px; }
+    form { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.03); }
+
+    fieldset { border: 1px solid var(--border); border-radius: 10px; margin: 0 0 14px; padding: 10px 12px; }
+    legend { padding: 0 6px; font-weight: 700; color: #103; }
+
+    .grid { display: grid; gap: var(--gap); }
+    .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .row { display: grid; grid-template-columns: 180px 1fr; gap: 10px; align-items: center; }
+
+    label { font-weight: 600; font-size: 13px; }
+    .muted { color: var(--muted); font-weight: 500; }
+    input[type="text"], input[type="number"], input[type="date"], input[type="time"], input[type="datetime-local"], select, textarea {
+      width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font: inherit; background: #fff;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+
+    .checkgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; }
+    .checkgrid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .check { display: flex; gap: 8px; align-items: center; }
+    .help { font-size: 12px; color: var(--muted); }
+    .right { text-align: right; }
+
+    .note { padding: 10px 12px; background: #f5fff8; border: 1px solid #d8f5e2; border-radius: 8px; margin: 8px 0 14px; }
+
+    .signature { height: 40px; border: 1px dashed var(--border); border-radius: 6px; background: #fafafa; }
+
+    /* print styles */
+    @media print {
+      header, .note, .noprint { display: none !important; }
+      body { background: #fff; }
+      form { border: none; box-shadow: none; padding: 0; }
+      .wrap, main { padding: 0; }
+      fieldset { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap toolbar">
+      <h1 class="noprint">Benson Fire Department — NFIRS Quick Form</h1>
+      <div class="spacer noprint"></div>
+      <button class="noprint" type="button" id="saveDraft">Save draft</button>
+      <button class="noprint" type="button" id="loadDraft">Load draft</button>
+      <button class="noprint" type="button" id="exportJson">Export JSON</button>
+      <button class="noprint" type="button" id="resetForm">Reset</button>
+      <button class="primary noprint" type="button" id="printForm">Print</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <div class="note noprint">
+      This online form mirrors the fields on the Benson Fire Department NFIRS Quick Form. Print to paper (or PDF) using the <strong>Print</strong> button. Fields marked optional may be left blank.
+    </div>
+
+    <form id="nfirsForm" autocomplete="on">
+
+      <!-- Incident meta -->
+      <fieldset>
+        <legend>Incident Information</legend>
+        <div class="grid g3">
+          <div>
+            <label for="incidentDate">Date</label>
+            <input id="incidentDate" name="incidentDate" type="date" required />
+          </div>
+          <div>
+            <label for="dispatchTime">Dispatch</label>
+            <input id="dispatchTime" name="dispatchTime" type="time" />
+          </div>
+          <div>
+            <label for="onSceneTime">On Scene</label>
+            <input id="onSceneTime" name="onSceneTime" type="time" />
+          </div>
+          <div>
+            <label for="controlledTime">Controlled</label>
+            <input id="controlledTime" name="controlledTime" type="time" />
+          </div>
+          <div>
+            <label for="clearedTime">Cleared</label>
+            <input id="clearedTime" name="clearedTime" type="time" />
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Address -->
+      <fieldset>
+        <legend>Address / Location</legend>
+        <div class="grid g2">
+          <div class="row"><label for="houseNum">House #</label><input id="houseNum" name="houseNum" type="text" /></div>
+          <div class="row"><label for="street">Street Address</label><input id="street" name="street" type="text" /></div>
+        </div>
+        <div class="row"><label for="nearest">If no house number: nearest intersection & distance</label><input id="nearest" name="nearest" type="text" /></div>
+      </fieldset>
+
+      <!-- Apparatus / Personnel / Property Use -->
+      <fieldset>
+        <legend>Resources & Property Use</legend>
+        <div class="grid g3">
+          <div class="row"><label for="apparatus">Apparatus used</label><input id="apparatus" name="apparatus" type="text" placeholder="e.g., Engine 1, Tanker 2, Brush 1" /></div>
+          <div class="row"><label for="personnel">Personnel used</label><input id="personnel" name="personnel" type="number" min="0" step="1" /></div>
+          <div class="row">
+            <label for="propertyUse">Property Use</label>
+            <select id="propertyUse" name="propertyUse">
+              <option value="">— Select —</option>
+              <option>150 Public Building</option>
+              <option>213 School</option>
+              <option>363 Juvenile Detention</option>
+              <option>419 1–2 Family Dwelling</option>
+              <option>429 Multifamily Dwelling</option>
+              <option>519 Grocery Store</option>
+              <option>919 Dump</option>
+              <option>921 Bridge</option>
+              <option>931 Open Land</option>
+              <option>946 Lake / River</option>
+              <option>961 Highway</option>
+              <option>962 Street</option>
+              <option value="other">Other (specify below)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row"><label for="propertyUseOther">Property Use — other</label><input id="propertyUseOther" name="propertyUseOther" type="text" /></div>
+      </fieldset>
+
+      <!-- Type of call -->
+      <fieldset>
+        <legend>Type of Call (check all that apply)</legend>
+        <div class="checkgrid checkgrid-3">
+          <label class="check"><input type="checkbox" name="type[]" value="MVC with injuries" /> MVC w/ injuries</label>
+          <label class="check"><input type="checkbox" name="type[]" value="MVC no injury" /> MVC no injury</label>
+          <label class="check"><input type="checkbox" name="type[]" value="MVC extrication" /> MVC extrication</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Vehicle fire" /> Vehicle fire</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Power lines" /> Power lines</label>
+          <label class="check"><input type="checkbox" name="type[]" value="CO present" /> CO present</label>
+          <label class="check"><input type="checkbox" name="type[]" value="CO detector activation" /> CO detector</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Smoke detector activation" /> Smoke detector</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Chimney fire" /> Chimney fire</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Grass fire" /> Grass fire</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Brush fire" /> Brush fire</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Unauthorized burn" /> Unauthorized burn</label>
+          <label class="check"><input type="checkbox" name="type[]" value="House fire" /> House fire</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Mobile home fire" /> Mobile home</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Cancelled en route" /> Cancelled en route</label>
+          <label class="check"><input type="checkbox" name="type[]" value="Other" /> Other</label>
+        </div>
+      </fieldset>
+
+      <!-- Actions taken -->
+      <fieldset>
+        <legend>Actions Taken (pick up to 3)</legend>
+        <div class="checkgrid checkgrid-3" id="actionsTaken">
+          <label class="check"><input type="checkbox" name="actions[]" value="Incident command" /> Incident Command</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Investigate" /> Investigate</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Extinguish fire" /> Extinguish Fire</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Salvage/Overhaul" /> Salvage / Overhaul</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Search" /> Search</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Provide manpower" /> Provide manpower</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Extrication" /> Extrication</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Control traffic" /> Control Traffic</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Remove water" /> Remove water</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Rescue" /> Rescue</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Standby" /> Standby</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Cancelled" /> Cancelled</label>
+          <label class="check"><input type="checkbox" name="actions[]" value="Other" /> Other</label>
+        </div>
+        <div class="help">Selecting more than three will be prevented.</div>
+      </fieldset>
+
+      <!-- People -->
+      <fieldset>
+        <legend>Person Involved</legend>
+        <div class="grid g2">
+          <div class="row"><label for="personName">Full Name</label><input id="personName" name="personName" type="text" /></div>
+          <div class="row"><label for="personAddr">Address (mailing is fine)</label><input id="personAddr" name="personAddr" type="text" /></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Owner (if different)</legend>
+        <div class="grid g2">
+          <div class="row"><label for="ownerName">Full Name</label><input id="ownerName" name="ownerName" type="text" /></div>
+          <div class="row"><label for="ownerAddr">Address (mailing is fine)</label><input id="ownerAddr" name="ownerAddr" type="text" /></div>
+        </div>
+      </fieldset>
+
+      <!-- Fire details -->
+      <fieldset>
+        <legend>If Fire — describe</legend>
+        <div class="grid g2">
+          <div class="row"><label for="whatBurned">What burned</label><input id="whatBurned" name="whatBurned" type="text" /></div>
+          <div class="row">
+            <label>Where started</label>
+            <div class="grid">
+              <div class="checkgrid">
+                <label class="check"><input type="radio" name="whereStarted" value="Intentional" /> Intentional</label>
+                <label class="check"><input type="radio" name="whereStarted" value="Unintentional" /> Unintentional</label>
+                <label class="check"><input type="radio" name="whereStarted" value="Act of Nature" /> Act of Nature</label>
+                <label class="check"><input type="radio" name="whereStarted" value="Under Investigation" /> Under Investigation</label>
+                <label class="check"><input type="radio" name="whereStarted" value="Equipment Failure" /> Equipment Failure</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid g4">
+          <div class="row"><label for="equipBrand">Equipment brand</label><input id="equipBrand" name="equipBrand" type="text" /></div>
+          <div class="row"><label for="equipModel">Model #</label><input id="equipModel" name="equipModel" type="text" /></div>
+          <div class="row"><label for="equipSerial">Serial #</label><input id="equipSerial" name="equipSerial" type="text" /></div>
+          <div class="row"><label for="equipYear">Year</label><input id="equipYear" name="equipYear" type="text" /></div>
+        </div>
+      </fieldset>
+
+      <!-- Vehicle fire / mobile property -->
+      <fieldset>
+        <legend>If Vehicle Fire or Mobile Property</legend>
+        <div class="grid g3">
+          <div class="row"><label for="vehMake">Make</label><input id="vehMake" name="vehMake" type="text" /></div>
+          <div class="row"><label for="vehModel">Model</label><input id="vehModel" name="vehModel" type="text" /></div>
+          <div class="row"><label for="vehYear">Year</label><input id="vehYear" name="vehYear" type="text" /></div>
+          <div class="row"><label for="plate">License plate #</label><input id="plate" name="plate" type="text" /></div>
+          <div class="row"><label for="plateState">State</label><input id="plateState" name="plateState" type="text" /></div>
+          <div class="row"><label for="vin">VIN</label><input id="vin" name="vin" type="text" /></div>
+        </div>
+      </fieldset>
+
+      <!-- Structure fire -->
+      <fieldset>
+        <legend>If Structure Fire</legend>
+        <div class="grid g3">
+          <div class="row"><label for="bldgType">Type of Building</label><input id="bldgType" name="bldgType" type="text" placeholder="e.g., 1–2 family, multifamily, public" /></div>
+          <div class="row"><label for="bldgSize">Size (L × W)</label><input id="bldgSize" name="bldgSize" type="text" placeholder="e.g., 40 × 30 ft" /></div>
+          <div class="row"><label for="bldgHeight">Height</label><input id="bldgHeight" name="bldgHeight" type="text" placeholder="e.g., 2 stories" /></div>
+        </div>
+        <div class="grid g3">
+          <div class="row"><label for="smokePresent">Smoke detectors present</label>
+            <select id="smokePresent" name="smokePresent">
+              <option value="">—</option>
+              <option>Y</option>
+              <option>N</option>
+            </select>
+          </div>
+          <div class="row"><label for="smokeType">Type</label><input id="smokeType" name="smokeType" type="text" placeholder="e.g., battery, hardwired" /></div>
+          <div class="row"><label for="smokeOperated">Operated</label>
+            <select id="smokeOperated" name="smokeOperated">
+              <option value="">—</option>
+              <option>Y</option>
+              <option>N</option>
+            </select>
+          </div>
+        </div>
+        <div class="row"><label for="alertedResidents">Alerted residents</label>
+          <select id="alertedResidents" name="alertedResidents">
+            <option value="">—</option>
+            <option>Y</option>
+            <option>N</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <!-- Members present -->
+      <fieldset>
+        <legend>List Members Present</legend>
+        <textarea id="membersPresent" name="membersPresent" placeholder="One per line"></textarea>
+      </fieldset>
+
+      <!-- Narrative -->
+      <fieldset>
+        <legend>Narrative</legend>
+        <textarea id="narrative" name="narrative" placeholder="Describe what happened, actions taken, outcomes…"></textarea>
+      </fieldset>
+
+      <!-- Officer in charge -->
+      <fieldset>
+        <legend>Officer / FF in Charge</legend>
+        <div class="grid g2">
+          <div class="row"><label for="officerName">Name</label><input id="officerName" name="officerName" type="text" /></div>
+          <div class="row"><label for="officerSig">Signature (on print)</label><div class="signature"></div></div>
+        </div>
+      </fieldset>
+
+      <p class="help">Tip: Use the <strong>Save draft</strong> button to keep an in-browser copy; use <strong>Export JSON</strong> for a file you can email or archive. Printing to PDF preserves a clean paper layout.</p>
+
+    </form>
+  </main>
+
+  <script>
+    // Utilities to serialize and hydrate the form
+    const form = document.getElementById('nfirsForm');
+    const STORAGE_KEY = 'benson_nfirs_quick_form_v1';
+
+    function formToJSON(formEl) {
+      const data = {};
+      const fd = new FormData(formEl);
+      for (const [k, v] of fd.entries()) {
+        if (k.endsWith('[]')) {
+          const key = k.slice(0, -2);
+          if (!Array.isArray(data[key])) data[key] = [];
+          data[key].push(v);
+        } else if (data[k] !== undefined) {
+          // Convert multi-value fields (e.g., radios mistakenly duplicated)
+          data[k] = Array.isArray(data[k]) ? data[k].concat(v) : [data[k], v];
+        } else {
+          data[k] = v;
+        }
+      }
+      // Capture unchecked checkboxes/radios as empty too (optional)
+      document.querySelectorAll('input[type="checkbox"][name$="[]"]').forEach(cb => {
+        const key = cb.name.slice(0, -2);
+        if (!(key in data)) data[key] = [];
+      });
+      document.querySelectorAll('input[type="radio"]').forEach(r => {
+        if (!(r.name in data)) data[r.name] = '';
+      });
+      return data;
+    }
+
+    function jsonToForm(json) {
+      const data = typeof json === 'string' ? JSON.parse(json) : json;
+      // Clear form first
+      form.reset();
+      for (const [name, val] of Object.entries(data)) {
+        const els = form.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+        if (els.length) {
+          els.forEach(el => {
+            if (el.type === 'radio' || el.type === 'checkbox') {
+              el.checked = (Array.isArray(val) ? val : [val]).includes(el.value);
+            } else {
+              el.value = val;
+            }
+          });
+          continue;
+        }
+        // Handle array fields like name[]
+        const arrayEls = form.querySelectorAll(`[name="${CSS.escape(name)}[]"]`);
+        if (arrayEls.length) {
+          const arr = Array.isArray(val) ? val : [val];
+          arrayEls.forEach(el => { el.checked = arr.includes(el.value); });
+        }
+      }
+    }
+
+    // Save / Load / Export / Print / Reset
+    document.getElementById('saveDraft').addEventListener('click', () => {
+      const json = JSON.stringify(formToJSON(form));
+      localStorage.setItem(STORAGE_KEY, json);
+      alert('Draft saved in this browser.');
+    });
+
+    document.getElementById('loadDraft').addEventListener('click', () => {
+      const json = localStorage.getItem(STORAGE_KEY);
+      if (!json) return alert('No saved draft found in this browser.');
+      jsonToForm(json);
+      alert('Draft loaded.');
+    });
+
+    document.getElementById('exportJson').addEventListener('click', () => {
+      const data = formToJSON(form);
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      const d = new Date();
+      const ts = d.toISOString().split('T')[0];
+      a.href = URL.createObjectURL(blob);
+      a.download = `benson-nfirs-quick-form-${ts}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+
+    document.getElementById('resetForm').addEventListener('click', () => {
+      if (confirm('Clear all fields?')) form.reset();
+    });
+
+    document.getElementById('printForm').addEventListener('click', () => window.print());
+
+    // Limit actions taken to max 3
+    const actions = document.getElementById('actionsTaken');
+    actions.addEventListener('change', () => {
+      const boxes = actions.querySelectorAll('input[type="checkbox"]');
+      const checked = Array.from(boxes).filter(b => b.checked);
+      if (checked.length > 3) {
+        // Uncheck the box that was just checked
+        const last = Array.from(boxes).find(b => b === document.activeElement);
+        if (last && last.checked) last.checked = false;
+        alert('Please select at most three actions.');
+      }
+    });
+
+    // Auto uppercase helpful fields
+    const up = id => document.getElementById(id)?.addEventListener('input', (e) => {
+      e.target.value = e.target.value.toUpperCase();
+    });
+    up('plate'); up('plateState'); up('vin');
+
+    // Prefill date with today for convenience
+    (function prefillDate(){
+      const el = document.getElementById('incidentDate');
+      if (el && !el.value) {
+        const d = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        el.value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+      }
+    })();
+  </script>
+</body>
+</html>
