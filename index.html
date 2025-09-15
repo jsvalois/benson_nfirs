@@ -73,7 +73,7 @@
       body { background: #fff; font-size: 11.5px; line-height: 1.25; }
       .wrap, main { padding: 0; }
       form { border: none; box-shadow: none; padding: 0 0 28px 0; margin: 0; }
-      fieldset { page-break-inside: avoid; break-inside: avoid; margin: 6px 0; padding: 8px 10px; border-radius: 8px; border-width: 1px; }
+      fieldset { page-break-inside: auto; break-inside: auto; margin: 6px 0; padding: 8px 10px; border-radius: 8px; border-width: 1px; }
       legend { font-size: 12px; }
       .grid { gap: 8px; }
       .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -88,6 +88,18 @@
       /* Page numbers */
       .print-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 11px; color: #555; }
       .print-footer:after { content: 'Page ' counter(page) ' / ' counter(pages); }
+      /* Auto compact levels to fit one page when possible (no truncation) */
+      body.print-compact-1 { font-size: 10.9px; line-height: 1.2; }
+      body.print-compact-1 .grid { gap: 6px; }
+      body.print-compact-1 .row { grid-template-columns: 140px 1fr; gap: 5px; }
+      body.print-compact-1 input[type="text"], body.print-compact-1 input[type="number"], body.print-compact-1 input[type="date"], body.print-compact-1 input[type="time"], body.print-compact-1 input[type="datetime-local"], body.print-compact-1 select { padding: 3px 5px; }
+      body.print-compact-1 .checkgrid, body.print-compact-1 .checkgrid-3 { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px 8px; }
+
+      body.print-compact-2 { font-size: 10.4px; line-height: 1.15; }
+      body.print-compact-2 .grid { gap: 4px; }
+      body.print-compact-2 .row { grid-template-columns: 130px 1fr; gap: 4px; }
+      body.print-compact-2 input[type="text"], body.print-compact-2 input[type="number"], body.print-compact-2 input[type="date"], body.print-compact-2 input[type="time"], body.print-compact-2 input[type="datetime-local"], body.print-compact-2 select { padding: 2px 4px; }
+      body.print-compact-2 .checkgrid, body.print-compact-2 .checkgrid-3 { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 4px 6px; }
     }
 
     /* responsive tweaks */
@@ -484,8 +496,33 @@
     function removePrintTextareas() {
       document.querySelectorAll('.print-textarea').forEach(div => div.remove());
     }
-    window.addEventListener('beforeprint', buildPrintTextareas);
-    window.addEventListener('afterprint', removePrintTextareas);
+    function applyCompactToFitOnePage(){
+      try {
+        document.body.classList.remove('print-compact-1','print-compact-2');
+        // Measure printable area height in the print medium using a ruler div in inches.
+        const ruler = document.createElement('div');
+        ruler.style.height = 'calc(11in - 1.4in)'; // Letter height minus top+bottom margins (0.6in + 0.8in)
+        ruler.style.position = 'absolute'; ruler.style.visibility = 'hidden'; ruler.style.pointerEvents='none'; ruler.style.left='-9999px';
+        document.body.appendChild(ruler);
+        const pageHeight = ruler.getBoundingClientRect().height - 24; // reserve space for footer/padding
+        document.body.removeChild(ruler);
+
+        const formEl = document.getElementById('nfirsForm');
+        const h0 = formEl.getBoundingClientRect().height;
+        if (h0 > pageHeight) {
+          document.body.classList.add('print-compact-1');
+          const h1 = formEl.getBoundingClientRect().height;
+          if (h1 > pageHeight) {
+            document.body.classList.remove('print-compact-1');
+            document.body.classList.add('print-compact-2');
+            // If still larger, it will flow to multiple pages automatically—never truncated.
+          }
+        }
+      } catch (e) { /* safe fallback: let browser paginate */ }
+    }
+
+    window.addEventListener('beforeprint', () => { buildPrintTextareas(); applyCompactToFitOnePage(); });
+    window.addEventListener('afterprint', () => { document.body.classList.remove('print-compact-1','print-compact-2'); removePrintTextareas(); });
 
     // Limit actions taken to max 3
     const actions = document.getElementById('actionsTaken');
