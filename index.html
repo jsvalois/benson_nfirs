@@ -72,7 +72,7 @@
       header, .note, .noprint { display: none !important; }
       body { background: #fff; font-size: 11.5px; line-height: 1.25; }
       .wrap, main { padding: 0; }
-      form { border: none; box-shadow: none; padding: 0 0 28px 0; margin: 0; }
+      form { border: none; box-shadow: none; padding: 0 0 28px 0; margin: 26px 0 0 0; }
       fieldset { page-break-inside: auto; break-inside: auto; margin: 6px 0; padding: 8px 10px; border-radius: 8px; border-width: 1px; }
       legend { font-size: 12px; }
       .grid { gap: 8px; }
@@ -88,6 +88,8 @@
       /* Page numbers */
       .print-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 11px; color: #555; }
       .print-footer:after { content: 'Page ' counter(page) ' / ' counter(pages); }
+      /* Print title header on every page */
+      .print-header { position: fixed; top: 0; left: 0; right: 0; text-align: center; font-size: 14px; font-weight: 700; color: #222; }
       /* Auto compact levels to fit one page when possible (no truncation) */
       body.print-compact-1 { font-size: 10.9px; line-height: 1.2; }
       body.print-compact-1 .grid { gap: 6px; }
@@ -390,7 +392,8 @@
     </form>
   </main>
 
-  <!-- Printed page footer with page X / Y numbering -->
+  <!-- Printed page header & footer -->
+  <div class="print-header">Benson FD — NFIRS Quick Form</div>
   <div class="print-footer"></div>
 
   <script>
