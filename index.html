@@ -68,13 +68,28 @@
 
     /* print styles */
     @media print {
+      @page { size: Letter portrait; margin: 0.6in 0.6in 0.8in 0.6in; }
       header, .note, .noprint { display: none !important; }
-      body { background: #fff; }
-      form { border: none; box-shadow: none; padding: 0; }
+      body { background: #fff; font-size: 11.5px; line-height: 1.25; }
       .wrap, main { padding: 0; }
-      fieldset { page-break-inside: avoid; }
+      form { border: none; box-shadow: none; padding: 0 0 28px 0; margin: 0; }
+      fieldset { page-break-inside: avoid; break-inside: avoid; margin: 6px 0; padding: 8px 10px; border-radius: 8px; border-width: 1px; }
+      legend { font-size: 12px; }
+      .grid { gap: 8px; }
+      .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .row { grid-template-columns: 150px 1fr; gap: 6px; break-inside: avoid; }
+      label { font-size: 12px; }
+      input[type="text"], input[type="number"], input[type="date"], input[type="time"], input[type="datetime-local"], select { padding: 4px 6px; border-radius: 6px; }
+      /* Never truncate multi-line content: replace textareas with full-height print clones */
+      textarea { display: none !important; }
+      .print-textarea { display: block; white-space: pre-wrap; border: 1px solid #cfcfcf; padding: 4px 6px; border-radius: 6px; min-height: 24px; }
+      /* Page numbers */
+      .print-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 11px; color: #555; }
+      .print-footer:after { content: 'Page ' counter(page) ' / ' counter(pages); }
     }
-  
+
     /* responsive tweaks */
     @media (min-width: 600px) and (max-width: 1024px) {
       /* collapse larger grids to 2 cols on tablets */
@@ -363,6 +378,9 @@
     </form>
   </main>
 
+  <!-- Printed page footer with page X / Y numbering -->
+  <div class="print-footer"></div>
+
   <script>
     // Utilities to serialize and hydrate the form
     const form = document.getElementById('nfirsForm');
@@ -451,6 +469,23 @@
     });
 
     document.getElementById('printForm').addEventListener('click', () => window.print());
+
+    // Print helpers: ensure long textarea content is fully printed (never truncated)
+    function buildPrintTextareas() {
+      document.querySelectorAll('textarea').forEach((ta) => {
+        const nxt = ta.nextElementSibling;
+        if (nxt && nxt.classList && nxt.classList.contains('print-textarea')) nxt.remove();
+        const div = document.createElement('div');
+        div.className = 'print-textarea';
+        div.textContent = ta.value;
+        ta.insertAdjacentElement('afterend', div);
+      });
+    }
+    function removePrintTextareas() {
+      document.querySelectorAll('.print-textarea').forEach(div => div.remove());
+    }
+    window.addEventListener('beforeprint', buildPrintTextareas);
+    window.addEventListener('afterprint', removePrintTextareas);
 
     // Limit actions taken to max 3
     const actions = document.getElementById('actionsTaken');
