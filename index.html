@@ -74,6 +74,46 @@
       .wrap, main { padding: 0; }
       fieldset { page-break-inside: avoid; }
     }
+  
+    /* responsive tweaks */
+    @media (min-width: 600px) and (max-width: 1024px) {
+      /* collapse larger grids to 2 cols on tablets */
+      .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .checkgrid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 599px) {
+      /* phone-first layout: stack labels above inputs and use single-column grids */
+      .wrap { padding: 12px 14px; }
+      h1 { font-size: 18px; }
+      .toolbar { gap: 6px; }
+      .grid, .g2, .g3, .g4 { grid-template-columns: 1fr !important; }
+      .row { grid-template-columns: 1fr; gap: 6px; }
+      label { align-self: start; font-size: 14px; }
+      input[type="text"], input[type="number"], input[type="date"], input[type="time"], input[type="datetime-local"], select, textarea {
+        /* prevent iOS zoom on focus and enlarge tap targets */
+        font-size: 16px; padding: 12px; border-radius: 10px;
+      }
+      button, .btn { padding: 12px 14px; font-size: 16px; }
+      fieldset { padding: 12px; }
+      legend { font-size: 14px; }
+      .checkgrid, .checkgrid-3 { grid-template-columns: 1fr; }
+      .check { padding: 6px 8px; border: 1px solid #eee; border-radius: 8px; }
+      header { position: sticky; top: 0; }
+    }
+
+    /* optional dark mode for better phone readability */
+    @media (prefers-color-scheme: dark) {
+      body { background: #0f1115; color: #e6e6e6; }
+      header, form { background: #151923; border-color: #2a2f3b; }
+      fieldset { border-color: #2a2f3b; }
+      input[type="text"], input[type="number"], input[type="date"], input[type="time"], input[type="datetime-local"], select, textarea {
+        background: #0f1115; color: #e6e6e6; border-color: #2a2f3b;
+      }
+      .note { background: #0f1a14; border-color: #173b2b; }
+      button { background: #0f1115; border-color: #2a2f3b; color: #e6e6e6; }
+      button.primary { background: #0a5; border-color: #0a5; color: #fff; }
+    }
   </style>
 </head>
 <body>
